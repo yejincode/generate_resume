@@ -7,6 +7,8 @@ import kr.excel.resume.model.Person;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 // 데이터 입력 받기 위함.
 public class ResumeView {
@@ -21,15 +23,32 @@ public class ResumeView {
         String name = scanner.nextLine();
         System.out.print("사진을 입력하세요 : ");
         String photo = scanner.nextLine();
-
-        System.out.print("이메일을 입력하세요 : ");
-        String email = scanner.nextLine();
+        String email = " ";
+        while (!isValidEmail(email)) { //이메일 유효성 검사
+            System.out.print("이메일을 입력하세요 : ");
+            email = scanner.nextLine();
+            if (!isValidEmail(email)) {
+                System.out.println("올바른 이메일 형식이 아닙니다.");
+            }
+        }
         System.out.print("주소를 입력하세요 : ");
         String address  = scanner.nextLine();
-        System.out.print("생년월일을 입력하세요(예: 1990-01-01) : ");
-        String birth = scanner.nextLine();
-        System.out.print("전화번호를 입력하세요(예: 010-1234-5678) : ");
-        String phoneNumber = scanner.nextLine();
+        String birth = "";
+        while (!isValidBirthDate(birth)) { //생년월일 유효성 검사
+            System.out.print("생년월일을 입력하세요(예: 1990-01-01) : ");
+            birth = scanner.nextLine();
+            if (!isValidBirthDate(birth)) {
+                System.out.println("올바른 생년월일 형식이 아닙니다.");
+            }
+        }
+        String phoneNumber = "";
+        while (!isValidPhoneNumber(phoneNumber)) { //전화번호 유효성 검사
+            System.out.print("전화번호를 입력하세요(예: 010-1234-5678) : ");
+            phoneNumber = scanner.nextLine();
+            if (!isValidPhoneNumber(phoneNumber)) {
+                System.out.println("올바른 전화번호 형식이 아닙니다.");
+            }
+        }
 
         return new Person(name, photo, email, address, birth, phoneNumber); // PersonDTO 객체 생성
     }
@@ -79,5 +98,30 @@ public class ResumeView {
             sb.append(line).append("\n");
         }
         return sb.toString().trim();
+    }
+
+    // 유효성 검사
+    public static boolean isValidEmail(String email) {
+        // 이메일 유효성을 검사하는 정규 표현식
+        String emailRegex = "^[A-Za-z0-9+_.-]+@(.+)$";
+        Pattern pattern = Pattern.compile(emailRegex);
+        Matcher matcher = pattern.matcher(email);
+        return matcher.matches();
+    }
+
+    public static boolean isValidBirthDate(String birth) {
+        // 생년월일 유효성을 검사하는 정규 표현식
+        String birthRegex = "^\\d{4}-\\d{2}-\\d{2}$";
+        Pattern pattern = Pattern.compile(birthRegex);
+        Matcher matcher = pattern.matcher(birth);
+        return matcher.matches();
+    }
+
+    public static boolean isValidPhoneNumber(String phoneNumber) {
+        // 전화번호 유효성을 검사하는 정규 표현식
+        String phoneRegex = "^\\d{3}-\\d{4}-\\d{4}$";
+        Pattern pattern = Pattern.compile(phoneRegex);
+        Matcher matcher = pattern.matcher(phoneNumber);
+        return matcher.matches();
     }
 }
